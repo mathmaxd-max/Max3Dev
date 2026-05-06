@@ -1,3 +1,6 @@
+# Wrangler local deploy metadata (machine-specific paths; breaks CI/Pages)
+.wrangler/
+
 # build output
 dist/
 # generated types
