@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Set Dojo: a polished, mobile-first vanilla JavaScript trainer for Set pattern recognition."
+    />
+    <title>Set Dojo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero panel">
+        <div class="hero__copy">
+          <p class="eyebrow">Vanilla UI · Mobile first · Replaceable symbol assets</p>
+          <h1>Set Dojo</h1>
+          <p class="hero__lead">
+            Train pattern recognition, pair completion, and no-set detection with a clean,
+            polished interface that runs as a static site.
+          </p>
+        </div>
+        <button class="button button--ghost" id="new-board-button" type="button">
+          New board
+        </button>
+      </header>
+
+      <main class="layout">
+        <section class="panel controls-panel" aria-labelledby="mode-heading">
+          <div class="section-heading">
+            <p class="section-heading__eyebrow">Modes</p>
+            <h2 id="mode-heading">Training flow</h2>
+          </div>
+
+          <nav class="mode-nav" aria-label="Training modes">
+            <button class="mode-pill is-active" data-mode="passive" type="button">Passive</button>
+            <button class="mode-pill" data-mode="pair" type="button">Pair</button>
+            <button class="mode-pill" data-mode="set-no-set" type="button">Set / No Set</button>
+            <button class="mode-pill" data-mode="active" type="button">Active</button>
+          </nav>
+
+          <details class="timing-panel" open>
+            <summary>Timing</summary>
+            <div class="timing-panel__body">
+              <div class="timing-row">
+                <div class="timing-row__copy">
+                  <label for="delay-before-reveal">Reveal after</label>
+                  <p>Delay before the board or answer is revealed.</p>
+                </div>
+                <div class="timing-row__controls">
+                  <input id="delay-before-reveal" type="range" min="0.5" max="12" step="0.1" />
+                  <output id="delay-before-reveal-output" for="delay-before-reveal">4.5 s</output>
+                </div>
+              </div>
+
+              <div class="timing-row">
+                <div class="timing-row__copy">
+                  <label for="reveal-duration">Show each reveal for</label>
+                  <p>How long one highlighted solution stays visible.</p>
+                </div>
+                <div class="timing-row__controls">
+                  <input id="reveal-duration" type="range" min="0.2" max="5" step="0.1" />
+                  <output id="reveal-duration-output" for="reveal-duration">1.2 s</output>
+                </div>
+              </div>
+
+              <div class="timing-row">
+                <div class="timing-row__copy">
+                  <label for="delay-between-reveals">Pause between reveals</label>
+                  <p>Gap before the next solution is shown.</p>
+                </div>
+                <div class="timing-row__controls">
+                  <input id="delay-between-reveals" type="range" min="0" max="4" step="0.1" />
+                  <output id="delay-between-reveals-output" for="delay-between-reveals">0.5 s</output>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <div class="meta-grid">
+            <section class="meta-card" aria-labelledby="prompt-heading">
+              <p class="meta-card__eyebrow">Prompt</p>
+              <h3 id="prompt-heading">Current drill</h3>
+              <p id="prompt-text">Watch the board. All sets will be highlighted automatically.</p>
+            </section>
+
+            <section class="meta-card" aria-labelledby="stats-heading">
+              <p class="meta-card__eyebrow">Stats</p>
+              <h3 id="stats-heading">Session</h3>
+              <dl class="stat-list">
+                <div>
+                  <dt>Boards</dt>
+                  <dd id="boards-count">0</dd>
+                </div>
+                <div>
+                  <dt>Correct</dt>
+                  <dd id="correct-count">0</dd>
+                </div>
+                <div>
+                  <dt>Streak</dt>
+                  <dd id="streak-count">0</dd>
+                </div>
+                <div>
+                  <dt>Best</dt>
+                  <dd id="best-streak-count">0</dd>
+                </div>
+              </dl>
+            </section>
+          </div>
+        </section>
+
+        <section class="panel board-panel" aria-labelledby="board-heading">
+          <div class="board-panel__header">
+            <div>
+              <p class="section-heading__eyebrow" id="mode-kicker">Passive</p>
+              <h2 id="board-heading">Board</h2>
+              <p class="board-panel__description" id="mode-description">
+                Observe first. The trainer reveals all sets one after another.
+              </p>
+            </div>
+
+            <div class="countdown-card" aria-live="polite">
+              <p class="countdown-card__label" id="countdown-label">Reveal in</p>
+              <p class="countdown-card__value" id="countdown-value">4.5 s</p>
+              <div class="progress-bar" aria-hidden="true">
+                <div class="progress-bar__fill" id="progress-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pair-banner" id="pair-banner" hidden>
+            The highlighted cards are your pair. Tap the third matching card.
+          </div>
+
+          <div class="board-grid" id="board" role="grid" aria-label="Set board"></div>
+
+          <div class="action-row" id="action-row">
+            <button class="button button--secondary" id="reveal-now-button" type="button">
+              Reveal now
+            </button>
+            <button class="button button--secondary" id="clear-selection-button" type="button">
+              Clear selection
+            </button>
+            <button class="button" id="set-exists-button" type="button">Set exists</button>
+            <button class="button" id="no-set-button" type="button">No set</button>
+          </div>
+
+          <p class="status-line" id="status-line" aria-live="polite">
+            Waiting for the first reveal.
+          </p>
+        </section>
+      </main>
+    </div>
+
+    <script defer src="app.js"></script>
+  </body>
+</html>

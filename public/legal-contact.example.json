@@ -1,0 +1,11 @@
+{
+  "ownerName": "Vor- und Nachname / Firmenbezeichnung",
+  "addressLines": ["Straße und Hausnummer", "PLZ Ort", "Deutschland"],
+  "email": "kontakt@example.com",
+  "phone": "",
+  "vatId": "",
+  "tradeRegister": "",
+  "professionalTitle": "",
+  "supervisoryAuthority": "",
+  "hostingNote": "Die Website wird über Cloudflare Inc. ausgeliefert (CDN / Edge-Netzwerk)."
+}

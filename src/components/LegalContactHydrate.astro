@@ -1,0 +1,78 @@
+---
+
+---
+
+<script lang="ts">
+  type LegalContact = {
+    ownerName?: string;
+    addressLines?: string[];
+    email?: string;
+    phone?: string;
+    vatId?: string;
+    tradeRegister?: string;
+    professionalTitle?: string;
+    supervisoryAuthority?: string;
+    hostingNote?: string;
+  };
+
+  function escapeHtml(text: string) {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  async function hydrateLegalContact() {
+    try {
+      const response = await fetch('/legal-contact.json', { cache: 'no-store' });
+      if (!response.ok) throw new Error('missing');
+      const data = (await response.json()) as LegalContact;
+
+      document.querySelectorAll<HTMLElement>('[data-legal-field]').forEach((node) => {
+        const field = node.dataset.legalField;
+        if (!field) return;
+
+        if (field === 'addressHtml' && Array.isArray(data.addressLines)) {
+          node.innerHTML = data.addressLines.map((line) => `${escapeHtml(line)}`).join('<br />');
+          return;
+        }
+
+        const record = data as Record<string, string | undefined>;
+        const raw = field === 'email' ? data.email : record[field];
+        if (raw === undefined || raw === null || raw === '') {
+          node.innerHTML = '';
+          node.hidden = true;
+          return;
+        }
+
+        node.hidden = false;
+
+        if (field === 'email') {
+          const safe = escapeHtml(String(raw));
+          node.innerHTML = `<a href="mailto:${safe}">${safe}</a>`;
+          return;
+        }
+
+        if (field === 'phone') {
+          node.textContent = `Telefon: ${String(raw)}`;
+          return;
+        }
+
+        node.textContent = String(raw);
+      });
+
+      document.querySelectorAll<HTMLElement>('[data-legal-loading]').forEach((node) => node.remove());
+      document.querySelectorAll<HTMLElement>('[data-legal-ready]').forEach((node) => {
+        node.hidden = false;
+      });
+    } catch {
+      document.querySelectorAll<HTMLElement>('[data-legal-loading]').forEach((node) => {
+        node.textContent =
+          'Kontaktdaten konnten nicht geladen werden. Bitte legen Sie public/legal-contact.json an (Vorlage: public/legal-contact.example.json).';
+      });
+    }
+  }
+
+  void hydrateLegalContact();
+</script>

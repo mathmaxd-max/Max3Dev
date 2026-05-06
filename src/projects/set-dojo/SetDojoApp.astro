@@ -1,0 +1,172 @@
+---
+
+---
+
+<main class="set-dojo-shell">
+  <p class="set-dojo-shell__back">
+    <a href="/">← max3.dev</a>
+  </p>
+
+  <div class="set-dojo app-shell" id="set-dojo-root">
+    <header class="hero panel">
+      <div class="hero__copy">
+        <p class="eyebrow">Astro · Mobile first · Sprite symbols</p>
+        <h1>Set Dojo</h1>
+        <p class="hero__lead">
+          Train pattern recognition, pair completion, and no-set detection with a clean,
+          polished interface that runs as a static site.
+        </p>
+      </div>
+      <button class="button button--ghost" id="sd-new-board-button" type="button">New board</button>
+    </header>
+
+    <div class="layout">
+      <section class="panel controls-panel" aria-labelledby="sd-mode-heading">
+        <div class="section-heading">
+          <p class="section-heading__eyebrow">Modes</p>
+          <h2 id="sd-mode-heading">Training flow</h2>
+        </div>
+
+        <nav class="mode-nav" aria-label="Training modes">
+          <button class="mode-pill is-active" data-mode="passive" type="button">Passive</button>
+          <button class="mode-pill" data-mode="pair" type="button">Pair</button>
+          <button class="mode-pill" data-mode="set-no-set" type="button">Set / No Set</button>
+          <button class="mode-pill" data-mode="active" type="button">Active</button>
+        </nav>
+
+        <details class="timing-panel" open>
+          <summary>Timing</summary>
+          <div class="timing-panel__body">
+            <div class="timing-row">
+              <div class="timing-row__copy">
+                <label for="sd-delay-before-reveal">Reveal after</label>
+                <p>Delay before the board or answer is revealed.</p>
+              </div>
+              <div class="timing-row__controls">
+                <input id="sd-delay-before-reveal" type="range" min="0.5" max="12" step="0.1" />
+                <output id="sd-delay-before-reveal-output" for="sd-delay-before-reveal">4.5 s</output>
+              </div>
+            </div>
+
+            <div class="timing-row">
+              <div class="timing-row__copy">
+                <label for="sd-reveal-duration">Show each reveal for</label>
+                <p>How long one highlighted solution stays visible.</p>
+              </div>
+              <div class="timing-row__controls">
+                <input id="sd-reveal-duration" type="range" min="0.2" max="5" step="0.1" />
+                <output id="sd-reveal-duration-output" for="sd-reveal-duration">1.2 s</output>
+              </div>
+            </div>
+
+            <div class="timing-row">
+              <div class="timing-row__copy">
+                <label for="sd-delay-between-reveals">Pause between reveals</label>
+                <p>Gap before the next solution is shown.</p>
+              </div>
+              <div class="timing-row__controls">
+                <input id="sd-delay-between-reveals" type="range" min="0" max="4" step="0.1" />
+                <output id="sd-delay-between-reveals-output" for="sd-delay-between-reveals">0.5 s</output>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <div class="meta-grid">
+          <section class="meta-card" aria-labelledby="sd-prompt-heading">
+            <p class="meta-card__eyebrow">Prompt</p>
+            <h3 id="sd-prompt-heading">Current drill</h3>
+            <p id="sd-prompt-text">Watch the board. All sets will be highlighted automatically.</p>
+          </section>
+
+          <section class="meta-card" aria-labelledby="sd-stats-heading">
+            <p class="meta-card__eyebrow">Stats</p>
+            <h3 id="sd-stats-heading">Session</h3>
+            <dl class="stat-list">
+              <div>
+                <dt>Boards</dt>
+                <dd id="sd-boards-count">0</dd>
+              </div>
+              <div>
+                <dt>Correct</dt>
+                <dd id="sd-correct-count">0</dd>
+              </div>
+              <div>
+                <dt>Streak</dt>
+                <dd id="sd-streak-count">0</dd>
+              </div>
+              <div>
+                <dt>Best</dt>
+                <dd id="sd-best-streak-count">0</dd>
+              </div>
+            </dl>
+          </section>
+        </div>
+      </section>
+
+      <section class="panel board-panel" aria-labelledby="sd-board-heading">
+        <div class="board-panel__header">
+          <div>
+            <p class="section-heading__eyebrow" id="sd-mode-kicker">Passive</p>
+            <h2 id="sd-board-heading">Board</h2>
+            <p class="board-panel__description" id="sd-mode-description">
+              Observe first. The trainer reveals all sets one after another.
+            </p>
+          </div>
+
+          <div class="countdown-card" aria-live="polite">
+            <p class="countdown-card__label" id="sd-countdown-label">Reveal in</p>
+            <p class="countdown-card__value" id="sd-countdown-value">4.5 s</p>
+            <div class="progress-bar" aria-hidden="true">
+              <div class="progress-bar__fill" id="sd-progress-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pair-banner" id="sd-pair-banner" hidden>
+          The highlighted cards are your pair. Tap the third matching card.
+        </div>
+
+        <div class="board-grid" id="sd-board" role="grid" aria-label="Set board"></div>
+
+        <div class="action-row" id="sd-action-row">
+          <button class="button button--secondary" id="sd-reveal-now-button" type="button">
+            Reveal now
+          </button>
+          <button class="button button--secondary" id="sd-clear-selection-button" type="button">
+            Clear selection
+          </button>
+          <button class="button" id="sd-set-exists-button" type="button">Set exists</button>
+          <button class="button" id="sd-no-set-button" type="button">No set</button>
+        </div>
+
+        <p class="status-line" id="sd-status-line" aria-live="polite">Waiting for the first reveal.</p>
+      </section>
+    </div>
+  </div>
+</main>
+
+<style>
+  .set-dojo-shell {
+    width: min(1200px, calc(100vw - 1.5rem));
+    margin: 0 auto;
+    padding: 1rem 0 2rem;
+  }
+
+  .set-dojo-shell__back {
+    margin: 0 0 0.75rem;
+  }
+
+  .set-dojo-shell__back a {
+    color: #94a3b8;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  .set-dojo-shell__back a:hover,
+  .set-dojo-shell__back a:focus-visible {
+    color: #e2e8f0;
+    text-decoration: underline;
+  }
+</style>

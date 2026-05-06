@@ -1,0 +1,216 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LegalContactHydrate from '../../components/LegalContactHydrate.astro';
+---
+
+<BaseLayout
+  title="Datenschutzerklärung — max3.dev"
+  description="Informationen zur Verarbeitung personenbezogener Daten auf max3.dev."
+>
+  <main class="legal-page">
+    <article class="legal-page__article prose">
+      <p class="legal-page__loading" data-legal-loading>Lade Kontaktdaten …</p>
+
+      <h1>Datenschutzerklärung</h1>
+
+      <p>
+        Wir informieren Sie nach Artikel 13 der Datenschutz-Grundverordnung (DSGVO) sowie nach den
+        ergänzend anwendbaren datenschutzrechtlichen Bestimmungen des Bundes (insbesondere BDSG)
+        darüber, wie wir personenbezogene Daten auf dieser Website verarbeiten.
+      </p>
+
+      <div data-legal-ready hidden>
+        <h2>Verantwortliche Stelle</h2>
+        <p data-legal-field="ownerName"></p>
+        <p data-legal-field="addressHtml"></p>
+        <p>
+          E-Mail:
+          <span data-legal-field="email"></span>
+        </p>
+        <p data-legal-field="phone"></p>
+      </div>
+
+      <h2>Zwecke und Rechtsgrundlagen</h2>
+      <p>
+        Wir verarbeiten personenbezogene Daten, soweit dies zur Bereitstellung dieser Website
+        (Hosting/Auslieferung), zur Aufrechterhaltung der IT-Sicherheit sowie zur Kommunikation mit
+        uns erforderlich ist. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung /
+        vorvertragliche Maßnahmen), soweit Sie mit uns in Kontakt treten, sowie Art. 6 Abs. 1 lit. f
+        DSGVO (berechtigtes Interesse an einer sicheren und stabilen Bereitstellung der Website).
+      </p>
+
+      <h2>Hosting und Auslieferung über Cloudflare</h2>
+      <p>
+        Diese Website wird über das Content-Delivery-Netzwerk von Cloudflare, Inc. ausgeliefert.
+        Hierbei kann Cloudflare technische Zugriffsdaten verarbeiten (insbesondere IP-Adressen und
+        Informationen zur Verbindung), um die Auslieferung zu beschleunigen und vor Missbrauch zu
+        schützen. Informationen zur Datenverarbeitung durch Cloudflare finden Sie in der
+        Datenschutzerklärung von Cloudflare:
+        <a href="https://www.cloudflare.com/de-de/privacypolicy/" rel="noopener noreferrer"
+          >cloudflare.com/de-de/privacypolicy</a
+        >.
+      </p>
+      <p data-legal-field="hostingNote"></p>
+
+      <h2>Server-Logfiles</h2>
+      <p>
+        Beim Aufruf dieser Website erzeugt der Hosting-/CDN-Anbieter automatisch Informationen in
+        sogenannten Server-Logfiles (z. B. IP-Adresse, Datum und Uhrzeit des Abrufs, übertragene
+        Datenmenge, Meldung über erfolgreichen Abruf, Browsertyp/-version, Referrer-URL). Die
+        Verarbeitung erfolgt zur Gewährleistung der Funktionsfähigkeit und Sicherheit der Website.
+      </p>
+
+      <h2>Set Dojo (Trainer) — lokale Speicherung</h2>
+      <p>
+        Der Trainer unter <a href="/set_dojo/">/set_dojo/</a> kann zeitliche Einstellungen (Slider)
+        im Browser über den <strong>lokalen Speicher</strong> Ihres Endgeräts (<code
+          >localStorage</code
+        >) sichern. Diese Daten bleiben auf Ihrem Gerät und werden nicht automatisch an uns
+        übermittelt. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer
+        komfortablen Nutzung der Anwendung).
+      </p>
+      <p>
+        Sie können gespeicherte Website-Daten jederzeit in Ihrem Browser löschen (Browser-Einstellungen
+        → Website-Daten / Cookies und Website-Daten).
+      </p>
+
+      <h2>Cookies und ähnliche Technologien</h2>
+      <p>
+        Diese Website verwendet keine eigenen Tracking-Cookies zu Werbezwecken. Technisch notwendige
+        Funktionen können auf der eingesetzten Hosting-/CDN-Ebene erfolgen. Sofern bei einzelnen
+        Funktionen dennoch nicht notwendige Cookies eingesetzt werden sollten, werden wir diese
+        Beschreibung aktualisieren und — soweit erforderlich — eine Einwilligung gemäß TTDSG
+        einholen.
+      </p>
+
+      <h2>Kontaktaufnahme</h2>
+      <p>
+        Wenn Sie uns per E-Mail kontaktieren, verarbeiten wir die von Ihnen übermittelten Angaben
+        zur Bearbeitung der Anfrage. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO, soweit es um
+        vertragliche oder vorvertragliche Anfragen geht, sonst Art. 6 Abs. 1 lit. f DSGVO.
+      </p>
+
+      <h2>Speicherdauer</h2>
+      <p>
+        Server-Logfiles werden beim Hosting-/CDN-Anbieter nach dessen technischen und organisatorischen
+        Vorgaben für einen begrenzten Zeitraum gespeichert. Lokale Einstellungen im Trainer bleiben,
+        bis Sie sie im Browser löschen.
+      </p>
+
+      <h2>Ihre Rechte</h2>
+      <p>
+        Sie haben im Rahmen der jeweiligen gesetzlichen Voraussetzungen ein Recht auf Auskunft,
+        Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit sowie Widerspruch
+        gegen die Verarbeitung (Art. 15–21 DSGVO).
+      </p>
+
+      <h2>Beschwerderecht bei einer Aufsichtsbehörde</h2>
+      <p>
+        Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Zuständig ist
+        typischerweise die Aufsichtsbehörde Ihres gewöhnlichen Aufenthaltsorts oder des Ortes des
+        mutmaßlichen Verstoßes. Für Niedersachsen ist dies die Landesbeauftragte für den Datenschutz
+        Niedersachsen (LfD), soweit Sie dort ansässig sind oder der Sachverhalt einen Bezug zu
+        Niedersachsen hat:
+        <a href="https://www.lfd.niedersachsen.de/" rel="noopener noreferrer">lfd.niedersachsen.de</a>
+      </p>
+      <p>
+        Unabhängig davon bleibt die Beschwerde bei einer anderen Datenschutzaufsichtsbehörde möglich
+        (Art. 77 DSGVO).
+      </p>
+
+      <h2>Sicherheit</h2>
+      <p>
+        Wir treffen angemessene technische und organisatorische Maßnahmen gemäß Art. 32 DSGVO, um ein
+        dem Risiko angemessenes Schutzniveau zu gewährleisten.
+      </p>
+
+      <h2>Änderungen</h2>
+      <p>
+        Wir behalten uns vor, diese Datenschutzerklärung anzupassen, wenn sich die Website, die
+        eingesetzten Dienste oder die Rechtslage ändern.
+      </p>
+
+      <p class="legal-page__notice">
+        Hinweis: Diese Datenschutzerklärung ist eine Mustervorlage für eine statische Website mit
+        Cloudflare-Auslieferung und kann je nach tatsächlicher Einbindung weiterer Dienste ergänzt
+        werden müssen. Für eine verbindliche Bewertung im Einzelfall konsultieren Sie bitte eine
+        Fachperson.
+      </p>
+
+      <p class="legal-page__noscript">
+        <noscript>
+          Für eingebettete Kontaktangaben laden wir Daten aus <code>public/legal-contact.json</code>.
+          Ohne JavaScript nutzen Sie bitte die Vorlage <code>public/legal-contact.example.json</code>
+          oder das Impressum.
+        </noscript>
+      </p>
+    </article>
+  </main>
+  <LegalContactHydrate />
+</BaseLayout>
+
+<style>
+  .legal-page {
+    width: min(820px, calc(100vw - 2rem));
+    margin: 0 auto;
+    padding: 3rem 0 3.5rem;
+  }
+
+  .legal-page__article {
+    background: rgba(17, 24, 39, 0.82);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 24px 64px rgba(3, 7, 18, 0.45);
+    backdrop-filter: blur(16px);
+  }
+
+  .legal-page__article h1 {
+    margin-top: 0;
+    color: #f8fafc;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+  }
+
+  .legal-page__article h2 {
+    margin-top: 1.75rem;
+    color: #f8fafc;
+    font-size: 1.15rem;
+  }
+
+  .legal-page__article p {
+    color: #cbd5e1;
+    line-height: 1.65;
+  }
+
+  .legal-page__article a {
+    color: #7dd3fc;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .legal-page__loading {
+    margin: 0 0 1rem;
+    color: #94a3b8;
+    font-size: 0.95rem;
+  }
+
+  .legal-page__noscript {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: #94a3b8;
+  }
+
+  .legal-page__notice {
+    margin-top: 2rem;
+    padding: 1rem;
+    border-radius: 14px;
+    border: 1px solid rgba(125, 211, 252, 0.22);
+    background: rgba(125, 211, 252, 0.06);
+    color: #bae6fd;
+  }
+
+  .prose code {
+    font-size: 0.9em;
+    color: #e2e8f0;
+  }
+</style>

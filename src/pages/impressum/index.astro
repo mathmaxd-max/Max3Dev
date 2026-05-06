@@ -1,0 +1,142 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LegalContactHydrate from '../../components/LegalContactHydrate.astro';
+---
+
+<BaseLayout title="Impressum — max3.dev" description="Impressum der Website max3.dev gemäß TMG / MStV.">
+  <main class="legal-page">
+    <article class="legal-page__article prose">
+      <p class="legal-page__loading" data-legal-loading>Lade Kontaktdaten …</p>
+
+      <h1>Impressum</h1>
+
+      <div data-legal-ready hidden>
+        <h2>Angaben gemäß § 5 TMG / § 18 MStV</h2>
+        <p data-legal-field="ownerName"></p>
+        <p data-legal-field="addressHtml"></p>
+        <p>
+          E-Mail:
+          <span data-legal-field="email"></span>
+        </p>
+        <p data-legal-field="phone"></p>
+
+        <h2>Umsatzsteuer</h2>
+        <p data-legal-field="vatId"></p>
+
+        <h2>Handelsregister / Aufsicht</h2>
+        <p data-legal-field="tradeRegister"></p>
+        <p data-legal-field="supervisoryAuthority"></p>
+
+        <h2>Berufsrechtliche Angaben</h2>
+        <p data-legal-field="professionalTitle"></p>
+
+        <h2>Hosting / Auslieferung</h2>
+        <p data-legal-field="hostingNote"></p>
+      </div>
+
+      <p class="legal-page__noscript">
+        <noscript>
+          Bitte aktivieren Sie JavaScript, um die Impressumsdaten aus <code>public/legal-contact.json</code>
+          zu laden. Bis dahin können Sie die Vorlage unter <code>public/legal-contact.example.json</code>
+          einsehen.
+        </noscript>
+      </p>
+
+      <h2>Haftung für Inhalte</h2>
+      <p>
+        Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach
+        den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir jedoch nicht
+        verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach
+        Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.
+      </p>
+
+      <h2>Haftung für Links</h2>
+      <p>
+        Unser Angebot enthält ggf. Links zu externen Websites Dritter, auf deren Inhalte wir keinen
+        Einfluss haben. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter
+        verantwortlich.
+      </p>
+
+      <h2>Urheberrecht</h2>
+      <p>
+        Die durch den Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem
+        deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der
+        Verwertung außerhalb der Grenzen des Urheberrechts bedürfen der schriftlichen Zustimmung des
+        jeweiligen Autors bzw. Erstellers.
+      </p>
+
+      <p class="legal-page__notice">
+        Hinweis: Dieses Impressum ist eine Mustervorlage und muss an Ihre konkrete Situation
+        angepasst werden. Bei Unternehmen/Personen mit Impressumspflicht sind vollständige Angaben
+        erforderlich.
+      </p>
+    </article>
+  </main>
+  <LegalContactHydrate />
+</BaseLayout>
+
+<style>
+  .legal-page {
+    width: min(820px, calc(100vw - 2rem));
+    margin: 0 auto;
+    padding: 3rem 0 3.5rem;
+  }
+
+  .legal-page__article {
+    background: rgba(17, 24, 39, 0.82);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 24px 64px rgba(3, 7, 18, 0.45);
+    backdrop-filter: blur(16px);
+  }
+
+  .legal-page__article h1 {
+    margin-top: 0;
+    color: #f8fafc;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+  }
+
+  .legal-page__article h2 {
+    margin-top: 1.75rem;
+    color: #f8fafc;
+    font-size: 1.15rem;
+  }
+
+  .legal-page__article p {
+    color: #cbd5e1;
+    line-height: 1.65;
+  }
+
+  .legal-page__article a {
+    color: #7dd3fc;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .legal-page__loading {
+    margin: 0 0 1rem;
+    color: #94a3b8;
+    font-size: 0.95rem;
+  }
+
+  .legal-page__noscript {
+    margin: 1rem 0 2rem;
+    font-size: 0.9rem;
+    color: #94a3b8;
+  }
+
+  .legal-page__notice {
+    margin-top: 2rem;
+    padding: 1rem;
+    border-radius: 14px;
+    border: 1px solid rgba(251, 191, 36, 0.28);
+    background: rgba(251, 191, 36, 0.08);
+    color: #fde68a;
+  }
+
+  .prose code {
+    font-size: 0.9em;
+    color: #e2e8f0;
+  }
+</style>

@@ -1,0 +1,23 @@
+{
+  "name": "max3dev",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "generate:set-dojo": "node scripts/projects/set-dojo/generate-assets.mjs",
+    "generate:set-dojo-css": "node scripts/projects/set-dojo/build-css.mjs",
+    "build": "npm run generate:set-dojo && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^6.2.2"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5",
+    "wrangler": "^4.88.0"
+  }
+}

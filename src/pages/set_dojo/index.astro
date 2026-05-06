@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SetDojoApp from '../../projects/set-dojo/SetDojoApp.astro';
+import '../../projects/set-dojo/set-dojo.css';
+---
+
+<BaseLayout
+  title="Set Dojo — max3.dev"
+  description="Set Dojo: Trainer für Set-Erkennung — mobil-first, lokale Einstellungen."
+  lang="en"
+>
+  <SetDojoApp />
+</BaseLayout>
+
+<script>
+  import { mountSetDojo } from '../../projects/set-dojo/set-dojo-client';
+
+  const root = document.getElementById('set-dojo-root');
+  if (root) {
+    mountSetDojo(root);
+  }
+</script>

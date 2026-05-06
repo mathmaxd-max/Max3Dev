@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LegalContactHydrate from '../../components/LegalContactHydrate.astro';
+---
+
+<BaseLayout
+  title="Haftungsausschluss — max3.dev"
+  description="Haftungsausschluss der Website max3.dev."
+>
+  <main class="legal-page">
+    <article class="legal-page__article prose">
+      <p class="legal-page__loading" data-legal-loading>Lade Kontaktdaten …</p>
+
+      <h1>Haftungsausschluss</h1>
+
+      <p>
+        Die Inhalte dieser Website werden mit größtmöglicher Sorgfalt erstellt. Für die Richtigkeit,
+        Vollständigkeit und Aktualität der bereitgestellten Informationen kann jedoch keine Gewähr
+        übernommen werden. Verbindliche Auskünfte erteilen wir auf Anfrage gesondert.
+      </p>
+
+      <h2>Haftung für Inhalte</h2>
+      <p>
+        Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene Inhalte auf diesen Seiten nach
+        den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir jedoch nicht
+        verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach
+        Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur
+        Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben
+        hiervon unberührt. Eine diesbezügliche Haftung ist erst ab dem Zeitpunkt der Kenntnis einer
+        konkreten Rechtsverletzung möglich. Bei Bekanntwerden entsprechender Rechtsverletzungen
+        werden wir diese Inhalte umgehend entfernen.
+      </p>
+
+      <h2>Haftung für Links</h2>
+      <p>
+        Unser Angebot enthält ggf. Links zu externen Websites Dritter, auf deren Inhalte wir keinen
+        Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen.
+        Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der
+        Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche
+        Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht
+        erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne
+        konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von
+        Rechtsverletzungen werden wir derartige Links umgehend entfernen.
+      </p>
+
+      <h2>Keine Rechtsberatung</h2>
+      <p>
+        Sofern auf dieser Website rechtliche Themen angesprochen werden, handelt es sich um
+        allgemeine Informationen und keine Rechtsberatung im Sinne des Rechtsdienstleistungsgesetzes.
+      </p>
+
+      <div data-legal-ready hidden>
+        <h2>Kontakt</h2>
+        <p>
+          Verantwortliche Stelle und Kontaktmöglichkeiten finden Sie im
+          <a href="/impressum/">Impressum</a>.
+        </p>
+      </div>
+
+      <p class="legal-page__noscript">
+        <noscript>
+          Diese Seite lädt optionale Kontaktinformationen per JavaScript. Ohne JavaScript nutzen
+          Sie bitte die Angaben im Impressum oder die Vorlage <code>public/legal-contact.example.json</code>.
+        </noscript>
+      </p>
+    </article>
+  </main>
+  <LegalContactHydrate />
+</BaseLayout>
+
+<style>
+  .legal-page {
+    width: min(820px, calc(100vw - 2rem));
+    margin: 0 auto;
+    padding: 3rem 0 3.5rem;
+  }
+
+  .legal-page__article {
+    background: rgba(17, 24, 39, 0.82);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 24px 64px rgba(3, 7, 18, 0.45);
+    backdrop-filter: blur(16px);
+  }
+
+  .legal-page__article h1 {
+    margin-top: 0;
+    color: #f8fafc;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+  }
+
+  .legal-page__article h2 {
+    margin-top: 1.75rem;
+    color: #f8fafc;
+    font-size: 1.15rem;
+  }
+
+  .legal-page__article p {
+    color: #cbd5e1;
+    line-height: 1.65;
+  }
+
+  .legal-page__article a {
+    color: #7dd3fc;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .legal-page__loading {
+    margin: 0 0 1rem;
+    color: #94a3b8;
+    font-size: 0.95rem;
+  }
+
+  .legal-page__noscript {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: #94a3b8;
+  }
+
+  .prose code {
+    font-size: 0.9em;
+    color: #e2e8f0;
+  }
+</style>
