@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectGate from '../../components/ProjectGate.astro';
 import SetDojoApp from '../../projects/set-dojo/SetDojoApp.astro';
 import '../../projects/set-dojo/set-dojo.css';
 ---
@@ -9,14 +10,27 @@ import '../../projects/set-dojo/set-dojo.css';
   description="Set Dojo: Trainer für Set-Erkennung — mobil-first, lokale Einstellungen."
   lang="en"
 >
-  <SetDojoApp />
+  <ProjectGate>
+    <SetDojoApp />
+  </ProjectGate>
 </BaseLayout>
 
 <script>
+  import { isProjectGateActive, PROJECT_GATE_STORAGE_KEY } from '../../lib/project-gate';
   import { mountSetDojo } from '../../projects/set-dojo/set-dojo-client';
 
-  const root = document.getElementById('set-dojo-root');
-  if (root) {
-    mountSetDojo(root);
+  function mount() {
+    const root = document.getElementById('set-dojo-root');
+    if (root) {
+      mountSetDojo(root);
+    }
+  }
+
+  if (!isProjectGateActive()) {
+    mount();
+  } else if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem(PROJECT_GATE_STORAGE_KEY) === '1') {
+    mount();
+  } else {
+    document.addEventListener('projectgate-unlocked', mount, { once: true });
   }
 </script>

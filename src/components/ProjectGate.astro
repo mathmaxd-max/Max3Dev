@@ -1,0 +1,222 @@
+---
+import { isProjectGateActive, PROJECT_GATE_STORAGE_KEY } from '../lib/project-gate';
+
+const gateActive = isProjectGateActive();
+---
+
+{
+  gateActive ? (
+    <>
+      <div
+        class="project-gate-overlay"
+        id="project-gate-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="project-gate-heading"
+      >
+        <div class="project-gate-panel">
+          <h2 class="project-gate-title" id="project-gate-heading">
+            Access
+          </h2>
+          <form class="project-gate-form" id="project-gate-form" autocomplete="off">
+            <label class="project-gate-label" for="project-gate-password">
+              Password
+            </label>
+            <input
+              class="project-gate-input"
+              id="project-gate-password"
+              name="password"
+              type="password"
+              required
+              autocomplete="current-password"
+            />
+            <p class="project-gate-error" id="project-gate-error" hidden>
+              Incorrect password.
+            </p>
+            <button class="project-gate-submit" type="submit">
+              Continue
+            </button>
+          </form>
+        </div>
+      </div>
+      <div class="project-gate-content" id="project-gate-content" hidden>
+        <slot />
+      </div>
+      <script is:inline define:vars={{ storageKey: PROJECT_GATE_STORAGE_KEY }}>
+        try {
+          if (sessionStorage.getItem(storageKey) === '1') {
+            var overlayEl = document.getElementById('project-gate-overlay');
+            var contentEl = document.getElementById('project-gate-content');
+            if (overlayEl) overlayEl.hidden = true;
+            if (contentEl) contentEl.removeAttribute('hidden');
+          }
+        } catch (_) {}
+      </script>
+      <script>
+        import {
+          getExpectedProjectGateHash,
+          PROJECT_GATE_STORAGE_KEY,
+        } from '../lib/project-gate';
+
+        const expectedHash = getExpectedProjectGateHash();
+
+        async function sha256Hex(text: string): Promise<string> {
+          const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+          return Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function unlock(): void {
+          try {
+            sessionStorage.setItem(PROJECT_GATE_STORAGE_KEY, '1');
+          } catch {
+            /* ignore */
+          }
+          const overlay = document.getElementById('project-gate-overlay');
+          const content = document.getElementById('project-gate-content');
+          if (overlay) overlay.hidden = true;
+          if (content) content.removeAttribute('hidden');
+          document.dispatchEvent(new CustomEvent('projectgate-unlocked'));
+        }
+
+        function setup(): void {
+          const form = document.getElementById('project-gate-form');
+          const input = document.getElementById('project-gate-password');
+          const err = document.getElementById('project-gate-error');
+          if (!form || !(input instanceof HTMLInputElement)) return;
+
+          if (!expectedHash) return;
+
+          try {
+            if (sessionStorage.getItem(PROJECT_GATE_STORAGE_KEY) === '1') {
+              unlock();
+              return;
+            }
+          } catch {
+            /* ignore */
+          }
+
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (err) err.hidden = true;
+            const value = input.value;
+            const digest = await sha256Hex(value);
+            if (digest.toLowerCase() === expectedHash.toLowerCase()) {
+              unlock();
+              input.value = '';
+            } else if (err) {
+              err.hidden = false;
+            }
+          });
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', setup, { once: true });
+        } else {
+          setup();
+        }
+      </script>
+    </>
+  ) : (
+    <slot />
+  )
+}
+
+<style>
+  .project-gate-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    background:
+      radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 32%),
+      linear-gradient(180deg, #050814, #0b1020 48%, #070b15 100%);
+    box-sizing: border-box;
+  }
+
+  .project-gate-overlay[hidden] {
+    display: none !important;
+  }
+
+  .project-gate-panel {
+    width: min(400px, 100%);
+    padding: 1.75rem;
+    border-radius: 24px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    background: rgba(17, 24, 39, 0.92);
+    box-shadow: 0 24px 64px rgba(3, 7, 18, 0.45);
+    backdrop-filter: blur(16px);
+  }
+
+  .project-gate-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.35rem;
+    color: #f8fafc;
+  }
+
+  .project-gate-note {
+    margin: 0 0 1.25rem;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    color: #94a3b8;
+  }
+
+  .project-gate-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .project-gate-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #cbd5e1;
+  }
+
+  .project-gate-input {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    border-radius: 12px;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: rgba(15, 23, 42, 0.65);
+    color: #f8fafc;
+    font: inherit;
+    box-sizing: border-box;
+  }
+
+  .project-gate-input:focus {
+    outline: 2px solid rgba(56, 189, 248, 0.45);
+    outline-offset: 1px;
+  }
+
+  .project-gate-error {
+    margin: 0;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #fb7185;
+  }
+
+  .project-gate-submit {
+    margin-top: 0.35rem;
+    appearance: none;
+    border: 0;
+    border-radius: 999px;
+    padding: 0.85rem 1.2rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.94), rgba(16, 185, 129, 0.94));
+    color: #ffffff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 12px 24px rgba(14, 165, 233, 0.22);
+  }
+
+  .project-gate-submit:hover,
+  .project-gate-submit:focus-visible {
+    transform: translateY(-1px);
+  }
+
+  .project-gate-content[hidden] {
+    display: none !important;
+  }
+</style>

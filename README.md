@@ -38,6 +38,8 @@ All commands are run from the root of the project, from a terminal:
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
 
+**Project pages:** Set `PUBLIC_PROJECT_ACCESS_SHA256` in `.env` / Cloudflare (SHA-256 hex of your password; see [.env.example](.env.example)). The gate is client-side friction only; direct URLs to files under `/public` may still load without it.
+
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
