@@ -69,6 +69,16 @@
                 <output id="sd-delay-between-reveals-output" for="sd-delay-between-reveals">0.5 s</output>
               </div>
             </div>
+
+            <div class="timing-row timing-row--switch">
+              <div class="timing-row__copy">
+                <label for="sd-reveal-when-correct">Reveal after correct answer</label>
+                <p>When on, show solution highlights before the next board even if you were already right.</p>
+              </div>
+              <div class="timing-row__switch">
+                <input id="sd-reveal-when-correct" type="checkbox" />
+              </div>
+            </div>
           </div>
         </details>
 
@@ -123,12 +133,6 @@
           </div>
         </div>
 
-        <div class="pair-banner" id="sd-pair-banner" hidden>
-          The highlighted cards are your pair. Tap the third matching card.
-        </div>
-
-        <div class="board-grid" id="sd-board" role="grid" aria-label="Set board"></div>
-
         <div class="action-row" id="sd-action-row">
           <button class="button button--secondary" id="sd-reveal-now-button" type="button">
             Reveal now
@@ -139,6 +143,12 @@
           <button class="button" id="sd-set-exists-button" type="button">Set exists</button>
           <button class="button" id="sd-no-set-button" type="button">No set</button>
         </div>
+
+        <div class="pair-banner" id="sd-pair-banner" hidden>
+          The highlighted cards are your pair. Tap the third matching card.
+        </div>
+
+        <div class="board-grid" id="sd-board" role="grid" aria-label="Set board"></div>
 
         <p class="status-line" id="sd-status-line" aria-live="polite">Waiting for the first reveal.</p>
       </section>

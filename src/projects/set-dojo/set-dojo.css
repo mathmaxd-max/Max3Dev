@@ -3,6 +3,9 @@
 .set-dojo {
   color-scheme: dark;
 
+  /* SetSymbols.png intrinsic ratio; each 3×3 cell matches the full sheet ratio. */
+  --set-symbols-sheet-ratio: 1019 / 576;
+
   /* Theme tokens (--set-color-* come from generated-colors.css). */
   --bg: #0b1020;
   --bg-elevated: rgba(17, 24, 39, 0.82);
@@ -221,6 +224,24 @@
   gap: 0.75rem;
 }
 
+.set-dojo .timing-row--switch {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 1rem;
+}
+
+.set-dojo .timing-row__switch {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.set-dojo .timing-row__switch input[type="checkbox"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
 input[type="range"] {
   width: 100%;
   accent-color: var(--accent);
@@ -329,15 +350,15 @@ output {
 
 .set-dojo .board-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.35rem, 2vw, 0.75rem);
 }
 
 .set-dojo .set-card {
   position: relative;
   display: grid;
   place-items: center;
-  padding: 0.75rem 0.5rem;
+  padding: clamp(0.45rem, 2vw, 0.75rem) clamp(0.35rem, 1.5vw, 0.5rem);
   min-height: 8rem;
   aspect-ratio: 5 / 8;
   border-radius: 1.15rem;
@@ -401,23 +422,12 @@ output {
   padding: 0.2rem 0;
 }
 
-.set-dojo .set-card__symbols[data-count="1"] .set-symbol {
-  width: min(94%, 7.25rem);
-}
-
-.set-dojo .set-card__symbols[data-count="2"] .set-symbol {
-  width: min(94%, 6rem);
-}
-
-.set-dojo .set-card__symbols[data-count="3"] .set-symbol {
-  width: min(94%, 5.1rem);
-}
-
-/* Square box preserves sprite aspect; rotate aligns art with classic Set (vertical symbols). */
+/* Same symbol size for every card (count-independent); box aspect matches sprite sheet for uniform mask scale. */
 .set-dojo .set-symbol {
   display: block;
   flex-shrink: 0;
-  aspect-ratio: 1;
+  width: 72%;
+  aspect-ratio: var(--set-symbols-sheet-ratio);
   height: auto;
   background-color: var(--symbol-color, var(--set-color-0));
   background-repeat: no-repeat;
@@ -489,10 +499,6 @@ output {
   .set-dojo .board-panel__header {
     grid-template-columns: minmax(0, 1fr) 240px;
     align-items: start;
-  }
-
-  .set-dojo .board-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 

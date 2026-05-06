@@ -49,6 +49,8 @@ const DEFAULT_TIMINGS = {
   delayBetweenRevealsMs: 500,
 };
 
+const DEFAULT_REVEAL_WHEN_CORRECT = false;
+
 const COUNTDOWN_TICK_MS = 90;
 const ALL_CARD_IDS = Array.from({ length: 81 }, (_, id) => id);
 
@@ -125,11 +127,14 @@ export function mountSetDojo(container: HTMLElement) {
       revealDuration: qs<HTMLOutputElement>(container, 'sd-reveal-duration-output'),
       delayBetweenReveals: qs<HTMLOutputElement>(container, 'sd-delay-between-reveals-output'),
     },
+    revealWhenCorrectInput: qs<HTMLInputElement>(container, 'sd-reveal-when-correct'),
   };
 
+  const loadedSettings = loadSettings();
   const state = {
     mode: MODES.PASSIVE as Mode,
-    timings: loadTimings(),
+    timings: loadedSettings.timings,
+    revealWhenCorrect: loadedSettings.revealWhenCorrect,
     board: [] as Card[],
     solutions: [] as number[][],
     selectedIds: new Set<number>(),
@@ -157,7 +162,7 @@ export function mountSetDojo(container: HTMLElement) {
     },
   };
 
-  function hydrateTimingControls() {
+  function hydrateSettings() {
     const mapping: [keyof typeof elements.inputs, keyof typeof state.timings][] = [
       ['delayBeforeReveal', 'delayBeforeRevealMs'],
       ['revealDuration', 'revealDurationMs'],
@@ -169,9 +174,16 @@ export function mountSetDojo(container: HTMLElement) {
       elements.inputs[inputKey].value = String(seconds);
       elements.outputs[inputKey].textContent = formatSeconds(state.timings[stateKey]);
     });
+
+    elements.revealWhenCorrectInput.checked = state.revealWhenCorrect;
   }
 
   function bindEvents() {
+    elements.revealWhenCorrectInput.addEventListener('change', () => {
+      state.revealWhenCorrect = elements.revealWhenCorrectInput.checked;
+      persistSettings();
+    });
+
     elements.modeButtons.forEach((button) => {
       button.addEventListener('click', () => {
         const nextMode = button.dataset.mode as Mode | undefined;
@@ -238,7 +250,7 @@ export function mountSetDojo(container: HTMLElement) {
       const valueMs = Math.round(Number(input.value) * 1000);
       state.timings[key] = valueMs;
       output.textContent = formatSeconds(valueMs);
-      persistTimings();
+      persistSettings();
       updateCountdownView();
     });
   }
@@ -413,9 +425,13 @@ export function mountSetDojo(container: HTMLElement) {
     if (state.mode === MODES.PAIR) {
       if (state.pairSourceIds.includes(cardId)) return;
       if (state.pairTargetIds.includes(cardId)) {
-        markSuccess();
-        setStatus('Correct. Loading the next pair board.');
-        schedule(() => startRound(), 320);
+        if (state.revealWhenCorrect) {
+          showCorrectPairReveal();
+        } else {
+          markSuccess();
+          setStatus('Correct. Loading the next pair board.');
+          schedule(() => startRound(), 320);
+        }
       } else {
         state.missedIds = new Set([cardId]);
         renderBoard();
@@ -454,9 +470,23 @@ export function mountSetDojo(container: HTMLElement) {
     const isCorrect = state.solutions.some((solution) => sameIdTriplet(solution, sortedIds));
 
     if (isCorrect) {
-      markSuccess();
-      setStatus('Correct set. Loading the next board.');
-      schedule(() => startRound(), 320);
+      if (state.revealWhenCorrect) {
+        stopCountdown();
+        state.phase = 'revealing';
+        state.selectedIds.clear();
+        applySuccessStats();
+        renderActionRow();
+        updateCountdownView();
+        void playRevealSequence({
+          solutions: state.solutions,
+          finalMessage: 'Correct set. Loading the next board.',
+          afterDone: () => startRound(),
+        });
+      } else {
+        markSuccess();
+        setStatus('Correct set. Loading the next board.');
+        schedule(() => startRound(), 320);
+      }
       return;
     }
 
@@ -469,9 +499,7 @@ export function mountSetDojo(container: HTMLElement) {
   function submitNoSet() {
     const isCorrect = state.solutions.length === 0;
     if (isCorrect) {
-      markSuccess();
-      setStatus('Correct. This board has no set. Loading the next board.');
-      schedule(() => startRound(), 320);
+      celebrateCorrectNoSet('Correct. This board has no set.');
       return;
     }
 
@@ -482,9 +510,26 @@ export function mountSetDojo(container: HTMLElement) {
   function submitSetNoSet(answerSetExists: boolean) {
     const actualSetExists = state.solutions.length > 0;
     if (answerSetExists === actualSetExists) {
-      markSuccess();
-      setStatus('Correct. Loading the next board.');
-      schedule(() => startRound(), 320);
+      if (!actualSetExists) {
+        celebrateCorrectNoSet('Correct. No set on this board.');
+        return;
+      }
+      if (state.revealWhenCorrect) {
+        stopCountdown();
+        state.phase = 'revealing';
+        applySuccessStats();
+        renderActionRow();
+        updateCountdownView();
+        void playRevealSequence({
+          solutions: state.solutions,
+          finalMessage: 'Correct. Loading the next board.',
+          afterDone: () => startRound(),
+        });
+      } else {
+        markSuccess();
+        setStatus('Correct. Loading the next board.');
+        schedule(() => startRound(), 320);
+      }
       return;
     }
 
@@ -492,14 +537,50 @@ export function mountSetDojo(container: HTMLElement) {
     revealBoardSolutions(answerSetExists ? 'No set exists here.' : 'At least one set exists here.');
   }
 
-  function markSuccess() {
-    stopCountdown();
-    state.phase = 'resolved';
+  function applySuccessStats() {
     state.stats.correct += 1;
     state.stats.streak += 1;
     state.stats.bestStreak = Math.max(state.stats.bestStreak, state.stats.streak);
-    state.revealedIds.clear();
     renderStats();
+  }
+
+  /** Full-board green highlight before the next round when “No set” was correct (if reveal-after-correct is on). */
+  function celebrateCorrectNoSet(message: string) {
+    if (!state.revealWhenCorrect) {
+      markSuccess();
+      setStatus(`${message} Loading the next board.`);
+      schedule(() => startRound(), 320);
+      return;
+    }
+    stopCountdown();
+    state.phase = 'revealing';
+    applySuccessStats();
+    state.revealedIds = new Set(state.board.map((card) => card.id));
+    renderBoard();
+    renderActionRow();
+    updateCountdownView();
+    setStatus(message);
+    schedule(() => startRound(), Math.max(450, state.timings.revealDurationMs));
+  }
+
+  function showCorrectPairReveal() {
+    stopCountdown();
+    state.phase = 'revealing';
+    applySuccessStats();
+    state.revealedIds = new Set(state.pairTargetIds);
+    state.missedIds.clear();
+    renderBoard();
+    renderActionRow();
+    updateCountdownView();
+    setStatus('Correct. The matching card is highlighted.');
+    schedule(() => startRound(), Math.max(450, state.timings.revealDurationMs));
+  }
+
+  function markSuccess() {
+    stopCountdown();
+    state.phase = 'resolved';
+    applySuccessStats();
+    state.revealedIds.clear();
     renderActionRow();
   }
 
@@ -788,33 +869,42 @@ export function mountSetDojo(container: HTMLElement) {
     return `${(milliseconds / 1000).toFixed(1)} s`;
   }
 
-  function loadTimings() {
+  function loadSettings(): { timings: typeof DEFAULT_TIMINGS; revealWhenCorrect: boolean } {
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { ...DEFAULT_TIMINGS };
-      const parsed = JSON.parse(raw) as Partial<typeof DEFAULT_TIMINGS>;
+      if (!raw) {
+        return { timings: { ...DEFAULT_TIMINGS }, revealWhenCorrect: DEFAULT_REVEAL_WHEN_CORRECT };
+      }
+      const parsed = JSON.parse(raw) as Partial<typeof DEFAULT_TIMINGS> & { revealWhenCorrect?: boolean };
       return {
-        delayBeforeRevealMs: sanitizeTiming(parsed.delayBeforeRevealMs, DEFAULT_TIMINGS.delayBeforeRevealMs),
-        revealDurationMs: sanitizeTiming(parsed.revealDurationMs, DEFAULT_TIMINGS.revealDurationMs),
-        delayBetweenRevealsMs: sanitizeTiming(
-          parsed.delayBetweenRevealsMs,
-          DEFAULT_TIMINGS.delayBetweenRevealsMs,
-        ),
+        timings: {
+          delayBeforeRevealMs: sanitizeTiming(parsed.delayBeforeRevealMs, DEFAULT_TIMINGS.delayBeforeRevealMs),
+          revealDurationMs: sanitizeTiming(parsed.revealDurationMs, DEFAULT_TIMINGS.revealDurationMs),
+          delayBetweenRevealsMs: sanitizeTiming(
+            parsed.delayBetweenRevealsMs,
+            DEFAULT_TIMINGS.delayBetweenRevealsMs,
+          ),
+        },
+        revealWhenCorrect:
+          typeof parsed.revealWhenCorrect === 'boolean' ? parsed.revealWhenCorrect : DEFAULT_REVEAL_WHEN_CORRECT,
       };
     } catch {
-      return { ...DEFAULT_TIMINGS };
+      return { timings: { ...DEFAULT_TIMINGS }, revealWhenCorrect: DEFAULT_REVEAL_WHEN_CORRECT };
     }
   }
 
-  function persistTimings() {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state.timings));
+  function persistSettings() {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...state.timings, revealWhenCorrect: state.revealWhenCorrect }),
+    );
   }
 
   function sanitizeTiming(value: number | undefined, fallback: number) {
     return Number.isFinite(value) && value !== undefined && value >= 0 ? Math.round(value) : fallback;
   }
 
-  hydrateTimingControls();
+  hydrateSettings();
   bindEvents();
   updateStaticMeta();
   startRound();
